@@ -4,7 +4,19 @@ import { Box, Grid, ListItemText, Typography } from '@mui/material';
 
 const Page = () => {
   const application = useApplication();
+  //const axios = require('axios');
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/api/departments');
+      const jresponse = await response.json();
+      console.log(jresponse.departments[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchData();
   return (
     <Box
       sx={{
