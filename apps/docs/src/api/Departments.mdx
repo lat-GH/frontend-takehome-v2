@@ -1,0 +1,56 @@
+import API from '../../.storybook/blocks/API';
+
+# Departments
+
+## Get Departments
+
+<API
+path="/api/departments"
+method="GET"
+responses={[
+{
+status: 200,
+result: { departments: [{ id: 'apparel', name: 'Apparel' }] },
+},
+]}
+query={[
+{
+name: 'searchTerm',
+required: true,
+description:
+'string (search term) – Filters down the departments by the search term',
+},
+]}
+/>
+
+## Get Department
+
+<API
+path="/api/departments/:department_id"
+method="GET"
+parameters={[
+{ name: 'department_id', description: 'string (department name)'}
+]}
+responses={[
+{
+status: 200,
+result: {
+department: {
+id: "apparel",
+name: "Apparel",
+sub_departments: ["Tops"]
+},
+},
+},
+{
+status: 400,
+result: {
+department: {
+id: "apparel",
+name: "Apparel",
+sub_departments: ["Tops"]
+},
+},
+}
+]}
+/>
