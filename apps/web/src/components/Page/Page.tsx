@@ -19,6 +19,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const Page = () => {
   const application = useApplication();
+  console.log('application = ', application);
 
   //console.log(getDepartment('beauty')); //trailing the use of the controller directly? only place i can find the 'searchTerm'
 
@@ -27,6 +28,9 @@ const Page = () => {
       const response = await fetch('http://localhost:3002/api/departments');
       const jresponse = await response.json();
       console.log(jresponse);
+      // trying to connect the api call to the context?
+      application.departments.data = jresponse.departments;
+      console.log('application 02 = ', application);
     } catch (error) {
       console.error(error);
     }
@@ -34,10 +38,13 @@ const Page = () => {
 
   fetchData();
 
-  const [dpt, setDpt] = React.useState('default');
+  const [dpt, setDpt] = React.useState('test01');
 
   const handleChange = (event: SelectChangeEvent) => {
     setDpt(event.target.value as string);
+    //i think the active derpamtent is the deparment that currently the state
+    application.activeDepartment = dpt;
+    console.log(application);
   };
 
   return (
