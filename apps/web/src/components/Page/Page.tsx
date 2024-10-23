@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApplication } from '../../contexts/ApplicationContext';
 import { List } from '@repo/ui';
 import {
@@ -23,22 +23,8 @@ const Page = () => {
 
   //console.log(getDepartment('beauty')); //trailing the use of the controller directly? only place i can find the 'searchTerm'
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:3002/api/departments');
-      const jresponse = await response.json();
-      console.log(jresponse);
-      // trying to connect the api call to the context?
-      application.departments.data = jresponse.departments;
-      console.log('application 02 = ', application);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  fetchData();
-
-  const [dpt, setDpt] = React.useState('test01');
+  //const [dpt, setDpt] = React.useState('test01');
+  const [dpt, setDpt] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     setDpt(event.target.value as string);
@@ -46,6 +32,23 @@ const Page = () => {
     application.activeDepartment = dpt;
     console.log(application);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3002/api/departments');
+        const jresponse = await response.json();
+        console.log(jresponse);
+        // trying to connect the api call to the context?
+        application.departments.data = jresponse.departments;
+        console.log('application 02 = ', application);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Box
@@ -68,9 +71,9 @@ const Page = () => {
                   value={dpt}
                   label="label"
                   onChange={handleChange}>
-                  <MenuItem value="test01">option1</MenuItem>
-                  <MenuItem value="test02">option2</MenuItem>
-                  <MenuItem value="test03">option3</MenuItem>
+                  {application.departments.data.map((option: any) => (
+                    <MenuItem key={option.id}>{option.name}</MenuItem>
+                  ))}
                 </Select>
               </div>
             }
