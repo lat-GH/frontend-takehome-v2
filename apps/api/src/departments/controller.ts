@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { getDepartments, getDepartment, DepartmentKeys } from './model';
-import { getSubDepartments } from './sub-departments/model';
+import { getDepartments, getDepartment, DepartmentKeys } from './model.js';
+import { getSubDepartments } from './sub-departments/model.js';
 
 const getDepartmentsController = (req: Request, res: Response) => {
   const departments = getDepartments(req.query.searchTerm as string);
