@@ -13,36 +13,34 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // The main page
 const Page = () => {
-  const application = useApplication(); //this was already here, i didnt add this
+  //const application = useApplication(); //this was already here, i didnt add this
   //console.log('application = ', application);
+
+  const {
+    activeDepartment,
+    departments,
+    subDepartments,
+    updateActiveDepartment,
+  } = useApplication();
 
   // setting up a state value to store the selected department
   const [dpt, setDpt] = useState('');
 
+  // creating the reducer functions
+  const handleActiveDepartmentChange = (newDepartment: string) => {
+    updateActiveDepartment(newDepartment); // triggers the UPDATE_ACTIVE_DEPARTMENT action
+  };
+
   //event handler to take care of when a deparments is selected
   const handleChange = (event: SelectChangeEvent) => {
     // setting the dpt state to the value from the select event
+    //REMEMBER the hooks are asynchronous (so the value wont update imddeiantley to be displayed in the console log)
     setDpt(event.target.value as string);
+    handleActiveDepartmentChange(event.target.value as string);
+
     //think the active derpamtent is the deparment that currently the state
-    application.activeDepartment = dpt;
-    console.log(
-      `IN EVENT HANDLER dpt = ${dpt} application.activeDepartment = ${application.activeDepartment}`
-    );
+    //application.activeDepartment = dpt;
   };
-
-  // TODO remove hardcoding once set up the api call that returns the subdepartments
-  application.subDepartments.data = [
-    'Athletic Shoes',
-    'Boots',
-    'Sneakers',
-    'Sandals',
-    'Flats',
-    'Heels',
-    'Slippers',
-  ];
-
-  //console.log('APPLICATION error=', application.subDepartments.error);
-  application.subDepartments.error = false; //TODO find out where the error is being set then remove all this hardcoding
 
   //only want the data to be fetched when the component is rerendered
   useEffect(() => {
@@ -57,7 +55,7 @@ const Page = () => {
         console.log(jresponse);
 
         // trying to connect the api call to the context? ---------TODO understand how to safely set the context value?
-        application.departments.data = jresponse.departments;
+        departments.data = jresponse.departments;
         //console.log('application 02 = ', application);
       } catch (error) {
         console.error(error);
@@ -66,6 +64,25 @@ const Page = () => {
 
     fetchData();
   }, []);
+
+  // TODO remove hardcoding once set up the api call that returns the subdepartments
+  // application.subDepartments.data = [
+  //   'Athletic Shoes',
+  //   'Boots',
+  //   'Sneakers',
+  //   'Sandals',
+  //   'Flats',
+  //   'Heels',
+  //   'Slippers',
+  // ];
+
+  //console.log('APPLICATION error=', application.subDepartments.error);
+  //application.subDepartments.error = false; //TODO find out where the error is being set then remove all this hardcoding
+
+  //-----------place async console logs here!---------------
+  //console.log(`++++++++++ AFTER dpt = ${dpt}`);
+  //console.log('++++++++++++ application', application);
+  console.log('++++++++++++++++ activeDepartment', activeDepartment);
 
   return (
     <Box
@@ -86,7 +103,7 @@ const Page = () => {
               <div>
                 <InputLabel id="select-label">Departments</InputLabel>
                 <Select value={dpt} onChange={handleChange}>
-                  {application.departments.data.map((option: any) => (
+                  {departments.data.map((option: any) => (
                     <MenuItem key={option.id} value={option.id}>
                       {option.name}
                     </MenuItem>
@@ -98,16 +115,16 @@ const Page = () => {
         </Grid>
         <Grid xs={8} item={true}>
           <Box sx={{ px: 2 }}>
-            {application.activeDepartment !== null && (
+            {activeDepartment !== null && (
               <List
-                items={application.subDepartments.data}
-                loading={application.subDepartments.loading}
-                error={application.subDepartments.error}
+                items={subDepartments.data}
+                loading={subDepartments.loading}
+                error={subDepartments.error}
                 loadingCount={15}>
                 {({ item }) => <ListItemText>{item}</ListItemText>}
               </List>
             )}
-            {application.activeDepartment === null && (
+            {activeDepartment === null && (
               <>
                 <Typography>
                   Select a department to see a list of sub-departments.
