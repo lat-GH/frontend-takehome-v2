@@ -11,35 +11,34 @@ import {
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-// import {
-//   getDepartments,
-//   getDepartment,
-//   DepartmentKeys,
-// } from '../../../../api/src/departments/model';
-
+// The main page
 const Page = () => {
   const application = useApplication();
-  console.log('application = ', application);
+  //console.log('application = ', application);
 
-  //console.log(getDepartment('beauty')); //trailing the use of the controller directly? only place i can find the 'searchTerm'
-
-  //const [dpt, setDpt] = React.useState('test01');
+  // setting up a state value to store the selected department
   const [dpt, setDpt] = React.useState('');
 
+  //event handler to take care of when a deparments is selected
   const handleChange = (event: SelectChangeEvent) => {
+    // setting the dpt state to the value from the select event
     setDpt(event.target.value as string);
-    //i think the active derpamtent is the deparment that currently the state
-    application.activeDepartment = dpt;
-    console.log(application);
+
+    //TODO i think the active derpamtent is the deparment that currently the state
+    //application.activeDepartment = dpt;
   };
 
+  //only want the data to be fetched when the component is rerendered
   useEffect(() => {
+    // fetches data from the local api
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3002/api/departments');
+        // converting into a json format
         const jresponse = await response.json();
         console.log(jresponse);
-        // trying to connect the api call to the context?
+
+        // trying to connect the api call to the context? ---------TODO understand how to safely set the context value?
         application.departments.data = jresponse.departments;
         console.log('application 02 = ', application);
       } catch (error) {
@@ -52,6 +51,7 @@ const Page = () => {
 
   return (
     <Box
+      //setting up the dimensions
       sx={{
         flexGrow: 1,
         maxWidth: '1200px',
@@ -64,15 +64,14 @@ const Page = () => {
         <Grid xs={4} item={true}>
           <Box sx={{ px: 2 }}>
             {
+              //my select component
               <div>
-                <InputLabel id="select-label">Options</InputLabel>
-                <Select
-                  labelId="select-label"
-                  value={dpt}
-                  label="label"
-                  onChange={handleChange}>
+                <InputLabel id="select-label">Departments</InputLabel>
+                <Select value={dpt} onChange={handleChange}>
                   {application.departments.data.map((option: any) => (
-                    <MenuItem key={option.id}>{option.name}</MenuItem>
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
                   ))}
                 </Select>
               </div>
