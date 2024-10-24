@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useApplication } from '../../contexts/ApplicationContext';
 import { List } from '@repo/ui';
 import {
@@ -13,25 +13,43 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // The main page
 const Page = () => {
-  const application = useApplication();
+  const application = useApplication(); //this was already here, i didnt add this
   //console.log('application = ', application);
 
   // setting up a state value to store the selected department
-  const [dpt, setDpt] = React.useState('');
+  const [dpt, setDpt] = useState('');
 
   //event handler to take care of when a deparments is selected
   const handleChange = (event: SelectChangeEvent) => {
     // setting the dpt state to the value from the select event
     setDpt(event.target.value as string);
-
-    //TODO i think the active derpamtent is the deparment that currently the state
-    //application.activeDepartment = dpt;
+    //think the active derpamtent is the deparment that currently the state
+    application.activeDepartment = dpt;
+    console.log(
+      `IN EVENT HANDLER dpt = ${dpt} application.activeDepartment = ${application.activeDepartment}`
+    );
   };
+
+  // TODO remove hardcoding once set up the api call that returns the subdepartments
+  application.subDepartments.data = [
+    'Athletic Shoes',
+    'Boots',
+    'Sneakers',
+    'Sandals',
+    'Flats',
+    'Heels',
+    'Slippers',
+  ];
+
+  //console.log('APPLICATION error=', application.subDepartments.error);
+  application.subDepartments.error = false; //TODO find out where the error is being set then remove all this hardcoding
 
   //only want the data to be fetched when the component is rerendered
   useEffect(() => {
+    //TODO MAYBE abstract this into a different file for later?
     // fetches data from the local api
     const fetchData = async () => {
+      console.log(`FETCH DATA CALLED`);
       try {
         const response = await fetch('http://localhost:3002/api/departments');
         // converting into a json format
@@ -40,7 +58,7 @@ const Page = () => {
 
         // trying to connect the api call to the context? ---------TODO understand how to safely set the context value?
         application.departments.data = jresponse.departments;
-        console.log('application 02 = ', application);
+        //console.log('application 02 = ', application);
       } catch (error) {
         console.error(error);
       }

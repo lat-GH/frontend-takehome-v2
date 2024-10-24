@@ -31,7 +31,7 @@ const List = <T = unknown,>({
       </MUIList>
     );
   }
-
+  //this is what is being displayed previuolsy because the list was alwyas throwing an error
   if (error) {
     return (
       <Box sx={{ py: 2.5 }}>
@@ -49,9 +49,10 @@ const List = <T = unknown,>({
   }
 
   return (
+    //it was complaining about not having a unique key for each of the ListeIetms, so i added an index
     <MUIList>
-      {items.map((item) => (
-        <MUIListItem>{children({ item })}</MUIListItem>
+      {items.map((item, index) => (
+        <MUIListItem key={index}>{children({ item })}</MUIListItem>
       ))}
     </MUIList>
   );
