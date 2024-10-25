@@ -21,6 +21,8 @@ const Page = () => {
     departments,
     subDepartments,
     updateActiveDepartment,
+    updateDepartment,
+    updateSubDepartment,
   } = useApplication();
 
   // setting up a state value to store the selected department
@@ -55,7 +57,11 @@ const Page = () => {
         console.log(jresponse);
 
         // trying to connect the api call to the context? ---------TODO understand how to safely set the context value?
-        departments.data = jresponse.departments;
+        updateDepartment({
+          data: jresponse.departments,
+          loading: false, //TODO figure out how to use the loading feature
+          error: false,
+        });
         //console.log('application 02 = ', application);
       } catch (error) {
         console.error(error);
@@ -65,23 +71,13 @@ const Page = () => {
     fetchData();
   }, []);
 
-  // TODO remove hardcoding once set up the api call that returns the subdepartments
-  // application.subDepartments.data = [
-  //   'Athletic Shoes',
-  //   'Boots',
-  //   'Sneakers',
-  //   'Sandals',
-  //   'Flats',
-  //   'Heels',
-  //   'Slippers',
-  // ];
-
   //console.log('APPLICATION error=', application.subDepartments.error);
   //application.subDepartments.error = false; //TODO find out where the error is being set then remove all this hardcoding
 
   //-----------place async console logs here!---------------
   //console.log(`++++++++++ AFTER dpt = ${dpt}`);
   //console.log('++++++++++++ application', application);
+  console.log('++++++++++++++++ departments', departments);
   console.log('++++++++++++++++ activeDepartment', activeDepartment);
 
   return (

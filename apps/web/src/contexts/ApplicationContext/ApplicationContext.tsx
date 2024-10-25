@@ -6,17 +6,26 @@ import {
   useReducer,
 } from 'react';
 import { applicationReducer } from '../../reducers/application';
-import { ApplicationState } from '../../reducers/application/types';
-import { updateActiveDepartment } from '../../reducers/application/actions';
+import {
+  ApplicationState,
+  Actions,
+  RequestState,
+} from '../../reducers/application/types';
+import {
+  updateActiveDepartment,
+  updateDepartment,
+  updateSubDepartment,
+} from '../../reducers/application/actions';
 
-// creating a type that matches the activeDepartment, departments, subDepartments format!
-// also connecting it to the fucntion that allows you to update the active department
+// Define the type for the context
 type ApplicationContextType = ApplicationState & {
   updateActiveDepartment: (value: string) => void;
+  updateDepartment: (value: RequestState<any>) => void; // New function to update departments
+  updateSubDepartment: (value: RequestState<any>) => void;
 };
 
 //setting a defaul state value for application
-const defaultState = {
+const defaultState: ApplicationState = {
   activeDepartment: '',
   departments: {
     data: [],
@@ -26,7 +35,7 @@ const defaultState = {
   subDepartments: {
     data: [],
     loading: false,
-    error: true, //INTERSTIN the error starts off as true!! so not nessicelry being triggered by an error
+    error: true, //INTERSTING the error starts off as true!! so not nessicelry being triggered by an error
   },
 };
 
@@ -34,9 +43,12 @@ const defaultState = {
 const defaultContext = {
   ...defaultState,
   updateActiveDepartment: () => {},
+  updateDepartment: () => {}, // Placeholder function for updateDepartments
+  updateSubDepartment: () => {},
 };
 
-// this is where the context gets CREATED! (uses all the stuff that was set up above)
+// this is where the context gets CREATED!
+//
 const ApplicationContext =
   createContext<ApplicationContextType>(defaultContext);
 
@@ -49,7 +61,9 @@ export const Application: FunctionComponent<{ children: ReactNode }> = ({
   // function starts here
   //sets up the reducer inside of the Application component
   //and sets the default state of the reducer to match that of the context
-  const [state, dispatch] = useReducer(applicationReducer, defaultState);
+  const [state, dispatch] = useReducer<
+    React.Reducer<ApplicationState, Actions>
+  >(applicationReducer, defaultState); //defaultState is of type ApplicationState
 
   return (
     // the provider is the root for the context and allows it to be populated elsewhere with the use of a consumer
@@ -59,6 +73,8 @@ export const Application: FunctionComponent<{ children: ReactNode }> = ({
         ...state,
         //holds the fucntion ot update the reducer
         updateActiveDepartment: updateActiveDepartment(dispatch),
+        updateDepartment: updateDepartment(dispatch), // Add updateDepartments function
+        updateSubDepartment: updateSubDepartment(dispatch),
       }}>
       {children}
     </ApplicationContext.Provider>

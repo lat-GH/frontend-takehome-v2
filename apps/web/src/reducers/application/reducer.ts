@@ -1,4 +1,4 @@
-import { ActionTypes, Actions, ApplicationState } from './types';
+import { ActionTypes, Actions, ApplicationState, RequestState } from './types';
 //---------------OLD CODE THAT CAME WITH THE EXERCISE------------------------
 // //reducers store all of the state update logic
 // const applicationReducer = (state: ApplicationState, action: Actions) => {
@@ -30,6 +30,27 @@ const applicationReducer = (state: ApplicationState, action: Actions) => {
       return {
         ...state, // spread the previous state to avoid mutating
         activeDepartment: action.payload.value, // update the activeDepartment
+      };
+    }
+    case ActionTypes.UPDATE_DEPARTMENTS: {
+      return {
+        ...state,
+        departments: {
+          // this structure matches the RequestState
+          data: action.payload.value.data,
+          loading: action.payload.value.loading,
+          error: action.payload.value.error,
+        },
+      };
+    }
+    case ActionTypes.UPDATE_SUB_DEPARTMENTS: {
+      return {
+        ...state,
+        subDepartments: {
+          data: action.payload.value.data,
+          loading: action.payload.value.loading,
+          error: action.payload.value.error,
+        },
       };
     }
     default: {
