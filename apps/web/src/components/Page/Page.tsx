@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useApplication } from '../../contexts/ApplicationContext';
 import { List } from '@repo/ui';
 import {
@@ -32,13 +32,13 @@ const Page = () => {
   useEffect(() => {
     //TODO MAYBE abstract this into a different file for later?
     // fetches data from the local api
-    const fetchData = async () => {
-      console.log(`FETCH DATA CALLED`);
+    const fetchDepartments = async () => {
+      //console.log(`FETCH DATA CALLED`);
       try {
         const response = await fetch('http://localhost:3002/api/departments');
         // converting into a json format
         const jresponse = await response.json();
-        console.log(jresponse);
+        // console.log(jresponse);
 
         updateDepartment({
           data: jresponse.departments,
@@ -50,13 +50,35 @@ const Page = () => {
       }
     };
 
-    fetchData();
+    fetchDepartments();
   }, []);
 
+  useEffect(() => {
+    const fetchSubDepartments = async () => {
+      console.log(`FETCH SUB DATA CALLED`);
+      try {
+        const response = await fetch(
+          `http://localhost:3002/api/departments/${activeDepartment}`
+        );
+        // converting into a json format
+        const jresponse = await response.json();
+        console.log(jresponse);
+
+        updateSubDepartment({
+          data: jresponse.department.subDepartments,
+          loading: false, //TODO figure out how to use the loading feature
+          error: false,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSubDepartments();
+  }, [activeDepartment]);
+
   //-----------place async console logs here!---------------
-  //console.log(`++++++++++ AFTER dpt = ${dpt}`);
-  //console.log('++++++++++++ application', application);
-  console.log('++++++++++++++++ departments', departments);
+  //console.log('++++++++++++++++ departments', departments);
   console.log('++++++++++++++++ activeDepartment', activeDepartment);
 
   return (
