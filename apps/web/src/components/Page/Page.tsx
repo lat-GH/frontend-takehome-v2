@@ -13,9 +13,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 // The main page
 const Page = () => {
-  //const application = useApplication(); //this was already here, i didnt add this
-  //console.log('application = ', application);
-
   const {
     activeDepartment,
     departments,
@@ -25,23 +22,10 @@ const Page = () => {
     updateSubDepartment,
   } = useApplication();
 
-  // setting up a state value to store the selected department
-  const [dpt, setDpt] = useState('');
-
-  // creating the reducer functions
-  const handleActiveDepartmentChange = (newDepartment: string) => {
-    updateActiveDepartment(newDepartment); // triggers the UPDATE_ACTIVE_DEPARTMENT action
-  };
-
   //event handler to take care of when a deparments is selected
   const handleChange = (event: SelectChangeEvent) => {
-    // setting the dpt state to the value from the select event
-    //REMEMBER the hooks are asynchronous (so the value wont update imddeiantley to be displayed in the console log)
-    setDpt(event.target.value as string);
-    handleActiveDepartmentChange(event.target.value as string);
-
-    //think the active derpamtent is the deparment that currently the state
-    //application.activeDepartment = dpt;
+    // setting the state to the value from the select event
+    updateActiveDepartment(event.target.value as string);
   };
 
   //only want the data to be fetched when the component is rerendered
@@ -56,13 +40,11 @@ const Page = () => {
         const jresponse = await response.json();
         console.log(jresponse);
 
-        // trying to connect the api call to the context? ---------TODO understand how to safely set the context value?
         updateDepartment({
           data: jresponse.departments,
           loading: false, //TODO figure out how to use the loading feature
           error: false,
         });
-        //console.log('application 02 = ', application);
       } catch (error) {
         console.error(error);
       }
@@ -70,9 +52,6 @@ const Page = () => {
 
     fetchData();
   }, []);
-
-  //console.log('APPLICATION error=', application.subDepartments.error);
-  //application.subDepartments.error = false; //TODO find out where the error is being set then remove all this hardcoding
 
   //-----------place async console logs here!---------------
   //console.log(`++++++++++ AFTER dpt = ${dpt}`);
@@ -98,7 +77,7 @@ const Page = () => {
               //my select component
               <div>
                 <InputLabel id="select-label">Departments</InputLabel>
-                <Select value={dpt} onChange={handleChange}>
+                <Select value={activeDepartment} onChange={handleChange}>
                   {departments.data.map((option: any) => (
                     <MenuItem key={option.id} value={option.id}>
                       {option.name}

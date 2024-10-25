@@ -17,14 +17,14 @@ import {
   updateSubDepartment,
 } from '../../reducers/application/actions';
 
-// Define the type for the context
+// Define the different action types for the context
 type ApplicationContextType = ApplicationState & {
   updateActiveDepartment: (value: string) => void;
-  updateDepartment: (value: RequestState<any>) => void; // New function to update departments
+  updateDepartment: (value: RequestState<any>) => void;
   updateSubDepartment: (value: RequestState<any>) => void;
 };
 
-//setting a defaul state value for application
+//setting a default state value for application
 const defaultState: ApplicationState = {
   activeDepartment: '',
   departments: {
@@ -48,17 +48,15 @@ const defaultContext = {
 };
 
 // this is where the context gets CREATED!
-//
 const ApplicationContext =
   createContext<ApplicationContextType>(defaultContext);
 
 // HUNCH this is a render props?
-// this Application component is wrapped around the whole of the web app in App.tsx
 
+// this Application component is wrapped around the whole of the web app in App.tsx
 export const Application: FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
-  // function starts here
   //sets up the reducer inside of the Application component
   //and sets the default state of the reducer to match that of the context
   const [state, dispatch] = useReducer<
@@ -71,7 +69,7 @@ export const Application: FunctionComponent<{ children: ReactNode }> = ({
       value={{
         //holds the state values e.g. departments and subdepartments
         ...state,
-        //holds the fucntion ot update the reducer
+        //holds the fucntion to update the reducer
         updateActiveDepartment: updateActiveDepartment(dispatch),
         updateDepartment: updateDepartment(dispatch), // Add updateDepartments function
         updateSubDepartment: updateSubDepartment(dispatch),
